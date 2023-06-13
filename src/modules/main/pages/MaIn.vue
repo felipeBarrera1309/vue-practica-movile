@@ -22,7 +22,13 @@
         <fooTer @showFooter="showHistory = !showHistory">
             <template #cards>
                 <div class="transition-footer" :class="{ 'content-history': showHistory }">
-
+                    <template v-if="showHistory">
+                        <moVements
+                            v-for="(movimiento, i) in movimientos"
+                            :key="i"
+                            :data="movimiento"
+                        />
+                    </template>
                 </div>
             </template>
         </fooTer>
@@ -30,13 +36,30 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import boDy from '../partials/boDy.vue';
 import fooTer from '../partials/fooTer.vue';
+import moVements from '../components/moVements.vue';
 
 export default {
     components: {
         boDy,
-        fooTer
+        fooTer,
+        moVements
+    },
+    setup(){
+        const movimientos = ref([
+            { id: 1, title: "Movimiento", description: "Deposito de salarios", amount: "1000", },
+            { id: 2, title: "Movimiento 1", description: "Deposito de honorarios", amount: "500", },
+            { id: 3, title: "Movimiento 3", description: "Comida", amount: "-100", },
+            { id: 4, title: "Movimiento 4", description: "Colegiatura", amount: "1000", },
+            { id: 5, title: "Movimiento 5", description: "Reparación equipo", amount: "1000", },
+        ])
+
+
+        return {
+            movimientos
+        }
     },
     data: () => ({
         showHistory: false,
@@ -89,11 +112,18 @@ section {
     .transition-footer {
         transition: height 0.3s ease-in-out;
         height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        overflow-y: auto;
 
         &.content-history {
             height: 500px;
             transition: height 0.3s ease-in-out;
         }
+    }
+    .transition-footer::-webkit-scrollbar{
+        width: 0;
     }
 }
 </style>
