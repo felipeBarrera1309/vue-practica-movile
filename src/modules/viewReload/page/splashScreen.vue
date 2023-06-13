@@ -1,7 +1,7 @@
 <template>
     <section>
         <img src="/public/icons/cashFlow-paisaje.svg" alt="" />
-        <p>Cash<span>Flow</span></p>
+        <p class="f-medium">Cash<span>Flow</span></p>
     </section>
 </template>
 
@@ -27,10 +27,11 @@ section {
     p {
         color: var(--brand-green);
         font-weight: 500;
+
+        span {
+            color: var(--brand-blue);
+        }
     }
 
-    span {
-        color: var(--brand-blue);
-    }
 }
 </style>
