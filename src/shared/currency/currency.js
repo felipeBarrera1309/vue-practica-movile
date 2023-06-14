@@ -4,5 +4,5 @@ export function currency(currencyAmount){
         currency: 'COP'
     })
 
-    return formatNumber.format(currencyAmount)
+    return formatNumber.format(currencyAmount).replace(/\D00$/, '')
 }

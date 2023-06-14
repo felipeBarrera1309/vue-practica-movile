@@ -6,12 +6,21 @@
         </div>
         <div>
             <img src="/public/icons/icon-trash-vue.svg" alt="" width="25" />
-            <p class="price-amount">${{ data.amount }}</p>
+            <p
+                :class="Number(data.amount) >= 0
+                    ?
+                    'price-amount-positive' :
+                    'price-amount-negative'
+                "
+            >
+                {{ currency(data.amount) }}
+            </p>
         </div>
     </div>
 </template>
 
 <script setup>
+import { currency } from '../../../shared/currency/currency';
 
 const props = defineProps({
     data:{
@@ -50,8 +59,11 @@ const props = defineProps({
         flex-direction: column;
         justify-content: space-between;
         align-items: flex-end;
-        .price-amount{
+        .price-amount-positive{
             color: var(--brand-green);
+        }
+        .price-amount-negative{
+            color: red;
         }
     }
 }
