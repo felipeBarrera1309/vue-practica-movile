@@ -13,7 +13,7 @@
             :fullAmount="fullAmount"
         >
             <template #graphic>
-                <graPhic />
+                <graPhic :amount="coordenadas" />
             </template>
             <template #action>
                 <Action @action="openModalMovement" />
@@ -169,6 +169,7 @@ export default {
         fullAmount: 6000000,
         title: 'Ahorro total',
         titleSelect: '13/6/2023',
+        coordenadas: [100, 400, 500, 400, -300, -400, 500]
     }),
     methods: {
         reload() {

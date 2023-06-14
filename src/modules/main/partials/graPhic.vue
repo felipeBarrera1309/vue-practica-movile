@@ -32,6 +32,16 @@
 
 <script setup>
 
+const props = defineProps({
+    amount:{
+        type: Array,
+        required: false,
+        default: () => []
+    }
+})
+
+console.log('Este es el array que recibimos: ', Array(props.amount).fill(100), [100])
+
 </script>
 
 <style lang="scss" scoped>
