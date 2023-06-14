@@ -1,0 +1,22 @@
+.el-radio{
+    .el-radio__input{
+        .el-radio__inner{
+            transform: scale(1.2);
+            border: 1.5px solid lightgrey !important;
+            transition: all 0.4s ease-in-out;
+        }
+        &.is-checked{
+            .el-radio__inner{
+                border-color: var(--brand-blue) !important;
+                background-color: transparent !important;
+                &::after{
+                    transform: translate(-50%,-50%) scale(2.4);
+                    background-color: rgb(84, 166, 194);
+                }
+            }
+        }
+    }
+    .el-radio__label{
+        color: black !important;
+    }
+}
