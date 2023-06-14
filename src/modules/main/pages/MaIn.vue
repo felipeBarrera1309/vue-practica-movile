@@ -13,7 +13,7 @@
             :fullAmount="fullAmount"
         >
             <template #graphic>
-                <p>Graphic</p>
+                <graPhic />
             </template>
             <template #action>
                 <Action @action="openModalMovement" />
@@ -79,6 +79,7 @@ import fooTer from '../partials/fooTer.vue';
 import moVements from '../components/moVements.vue';
 import Action from '../../../shared/components/aCtion.vue';
 import modalMovement from '../partials/modalMovement.vue';
+import graPhic from '../partials/graPhic.vue';
 
 export default {
     components: {
@@ -88,7 +89,8 @@ export default {
         Action,
         modalMovement,
         Form,
-        Field
+        Field,
+        graPhic
     },
     setup(){
         const movimientos = ref([
@@ -108,7 +110,7 @@ export default {
             radioValue: 1
         })
 
-        const error = 'Rellenar campo';
+        const error = 'Campo vacio';
 
         const mainSchema = {
             title(value){
@@ -136,6 +138,10 @@ export default {
         }
 
         function openModalMovement(){
+            valuesForm.value.titleForm = ''
+            valuesForm.value.amountForm = 0
+            valuesForm.value.description = ''
+            valuesForm.value.radioValue = 1
             showModal.value = !showModal.value
         }
 

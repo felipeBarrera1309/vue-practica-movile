@@ -44,12 +44,6 @@ export default{
         seeTitle(){
             return this.amount ? this.title: this.titeDate
         },
-        formatNumber(){
-            return new Intl.NumberFormat(('es-CO'), {
-                style: 'currency',
-                currency: 'COP'
-            })
-        },
         transformAmount(){
             return currency(this.seeAmount)
         }
@@ -62,7 +56,7 @@ export default{
 main{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    padding-top: 100px;
     align-items: center;
     height: calc(100vh - 70px);
     gap: 15px;

@@ -1,8 +1,7 @@
 export function currency(currencyAmount){
-    const formatNumber = new Intl.NumberFormat(('es-CO'), {
+    return new Intl.NumberFormat(('es-CO'), {
         style: 'currency',
         currency: 'COP'
-    })
+    }).format(currencyAmount).replace(/\D00$/, '')
 
-    return formatNumber.format(currencyAmount).replace(/\D00$/, '')
 }
