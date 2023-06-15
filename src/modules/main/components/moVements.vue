@@ -5,7 +5,7 @@
             <p>{{ data.description }}</p>
         </div>
         <div>
-            <img src="/public/icons/icon-trash-vue.svg" alt="" width="25" />
+            <img @click="emit('deleteMovement')" src="/public/icons/icon-trash-vue.svg" alt="" width="25" />
             <p
                 :class="Number(data.amount) >= 0
                     ?
@@ -29,6 +29,7 @@ const props = defineProps({
         default: () => {}
     }
 })
+const emit = defineEmits(['deleteMovement'])
 
 
 </script>

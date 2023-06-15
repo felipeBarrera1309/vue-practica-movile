@@ -13,7 +13,7 @@
             :fullAmount="fullAmount"
         >
             <template #graphic>
-                <graPhic :amount="coordenadasAmount" />
+                <graPhic :amount="coordenadasAmount" @touchLine="moveLine" />
             </template>
             <template #action>
                 <Action @action="openModalMovement" />
@@ -27,6 +27,7 @@
                             v-for="(movimiento, i) in movimientos"
                             :key="i"
                             :data="movimiento"
+                            @delete-movement="deleteAmount(i)"
                         />
                     </template>
                 </div>
@@ -72,7 +73,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { Form, Field } from 'vee-validate';
 import boDy from '../partials/boDy.vue';
 import fooTer from '../partials/fooTer.vue';
@@ -100,18 +101,22 @@ export default {
         titleSelect: '13/6/2023',
     }),
     setup(){
-        const movimientos = [
-            { id: 1, title: "Movimiento", description: "Deposito de salarios", amount: 100, time: new Date('05-18-2023') },
-            { id: 2, title: "Movimiento 1", description: "Deposito de honorarios", amount: 500, time: new Date("05-18-2023") },
-            { id: 3, title: "Movimiento 3", description: "Comida", amount: 200, time: new Date("05-18-2023") },
-            { id: 4, title: "Movimiento 4", description: "Colegiatura", amount: -400, time: new Date("05-18-2023") },
-            { id: 5, title: "Movimiento 5", description: "Reparación equipo", amount: -600, time: new Date("05-18-2023") },
-            { id: 6, title: "Movimiento 6", description: "Reparación equipo", amount: -300, time: new Date("05-18-2023") },
-            { id: 7, title: "Movimiento 7", description: "Reparación equipo", amount: 100, time: new Date("05-18-2023") },
-            { id: 8, title: "Movimiento 8", description: "Reparación equipo", amount: 300, time: new Date("03-18-2023") },
-            { id: 9, title: "Movimiento 9", description: "Reparación equipo", amount: 500, time: new Date("03-18-2023") },
-        ]
+        const movimientos = ref([])
         const showModal = ref(false)
+
+        onBeforeMount(() => {
+            saveDatasToStorage()
+        })
+
+        function saveDatasToStorage(){
+            const data = JSON.parse(localStorage.getItem('movements')) ?? []
+            movimientos.value = data.map(el => {
+                return {
+                    ...el,
+                    time: new Date(el.time)
+                }
+            })
+        }
 
         const valuesForm = ref({
             titleForm: '',
@@ -155,7 +160,33 @@ export default {
             showModal.value = !showModal.value
         }
 
+        function deleteAmount(i){
+            let data = JSON.parse(localStorage.getItem('movements'))
+            data = data.filter((el, index) => index !== i)
+            localStorage.setItem('movements', JSON.stringify(data))
+            saveDatasToStorage()
+        }
+
         function sendForm(){
+
+            const amounts = ref(JSON.parse(localStorage.getItem('movements')) ?? [])
+
+            const datas = {
+                id: new Date().getTime(),
+                title: valuesForm.value.titleForm,
+                description: valuesForm.value.description,
+                amount:
+                    valuesForm.value.radioValue == 1 ?
+                    Number(valuesForm.value.amountForm) :
+                    Number(-valuesForm.value.amountForm),
+                time: new Date()
+            }
+            amounts.value.push(datas)
+
+            localStorage.setItem('movements', JSON.stringify(amounts.value))
+            saveDatasToStorage()
+            console.log('Estas son las coordenadas enviadas: ', coordenadasAmount.value);
+
             valuesForm.value.titleForm = ''
             valuesForm.value.amountForm = 0
             valuesForm.value.description = ''
@@ -163,22 +194,11 @@ export default {
             openModalMovement()
         }
 
-
-        return {
-            movimientos,
-            valuesForm,
-            mainSchema,
-            openModalMovement,
-            sendForm,
-            showModal,
-        }
-    },
-    computed: {
-        coordenadasAmount(){
-            const coordenadasValues = this.movimientos.filter(el => {
+        const coordenadasAmount = computed(() => {
+            const coordenadasValues = movimientos.value.filter(el => {
                 const today = new Date();
                 const oldDate = today.setDate(today.getDate() - 30);
-                return el.time > oldDate
+                return el.time >= oldDate
             }).map(el => {
                 return el.amount
             }).reduce((acumulador, actual, i) => {
@@ -189,13 +209,28 @@ export default {
                 }
                 return acumulador
             }, [])
-            console.log('Estos son los valores ingresados: ', coordenadasValues);
             return coordenadasValues
+        })
+
+
+        return {
+            movimientos,
+            valuesForm,
+            mainSchema,
+            openModalMovement,
+            sendForm,
+            showModal,
+            coordenadasAmount,
+            deleteAmount
         }
     },
     methods: {
         reload() {
             location.reload();
+        },
+        moveLine(coordenadas){
+            console.log('Datos guardados en el array');
+            console.log(coordenadas);
         },
     }
 }

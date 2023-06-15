@@ -51,6 +51,8 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['touchLine'])
+
 function seeAmountValues({target: label, targetTouches: touches}){
     showLine.value = true
     const elementWidth = label.clientWidth;
@@ -58,6 +60,7 @@ function seeAmountValues({target: label, targetTouches: touches}){
     const touchX = touches[0].clientX;
     if( (touchX - restante) <= elementWidth &&  (touchX - restante) >= 0){
         lineGraph.value = (((touchX - restante) * elementWidth) / elementWidth)
+        emit('touchLine', lineGraph.value)
     }
 }
 
@@ -70,15 +73,19 @@ function coordenadasY(value){
     const max = Math.max(...props.amount);
 
     const coordenadas = valueY - (((value - min) / Math.abs(max - min))* valueY)
-    return Math.floor(coordenadas)
+    return coordenadas
 }
+
+console.log('Este es el resultado de y cuando esta en cero: ', coordenadasY(0));
+console.log('Estos son los valores de las coordenadas enviadas: ', props.amount);
 
 const points = computed(() => {
     const total = props.amount.length
     return props.amount.reduce((acumulador, actual, index) => {
-        const x = (valueX / total) * (index + 1)
-        console.log('Estas son las coordenadas de x: ', x);
+        const x = Math.floor((Number(valueX) / total) * (index))
+        console.log('Estas son las coordenadas en X: ', x);
         const y = coordenadasY(actual)
+        console.log('Estas son las coordenadas de Y: ', y);
         return `${acumulador} ${x}, ${y}`
     }, `0, ${coordenadasY(0)}`)
 })
