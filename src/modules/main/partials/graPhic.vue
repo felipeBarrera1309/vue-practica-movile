@@ -1,6 +1,9 @@
 <template>
     <div class="parent-graph">
         <svg
+            @touchstart="seeAmountValues"
+            @touchmove="seeAmountValues"
+            @touchend="getOut"
             :viewBox="`0 0 ${valueX} ${valueY}`"
         >
             <line
@@ -15,9 +18,10 @@
                 fill="none"
                 stroke="#0689b0"
                 stroke-width="2"
-                :points="referencePoints"
+                :points="points"
             />
             <line
+                v-if="showLine"
                 stroke="#04b500"
                 stroke-width="2"
                 :x1="lineGraph"
@@ -27,17 +31,17 @@
             />
         </svg>
         <p class="f-medium">Ultimos 30 dias</p>
-        <p>{{ coordenadasY(0) }}</p>
     </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import {  ref, computed } from 'vue';
 
 const valueX = '300';
 const valueY = '200';
 
-const lineGraph = ref('200')
+const lineGraph = ref(0)
+const showLine = ref(false)
 
 const props = defineProps({
     amount:{
@@ -47,24 +51,39 @@ const props = defineProps({
     }
 })
 
+function seeAmountValues({target: label, targetTouches: touches}){
+    showLine.value = true
+    const elementWidth = label.clientWidth;
+    const restante = label.getBoundingClientRect().left;
+    const touchX = touches[0].clientX;
+    if( (touchX - restante) <= elementWidth &&  (touchX - restante) >= 0){
+        lineGraph.value = (((touchX - restante) * elementWidth) / elementWidth)
+    }
+}
+
+function getOut(){
+    showLine.value = false
+}
+
 function coordenadasY(value){
     const min = Math.min(...props.amount);
     const max = Math.max(...props.amount);
 
-    const iterationAmount = value + Math.abs(min);
-    const pixels = Math.abs(min) + Math.abs(max)
-    const coordenadaY = valueY - Math.floor((iterationAmount * 100) / pixels) * 2
-    return coordenadaY;
+    const coordenadas = valueY - (((value - min) / Math.abs(max - min))* valueY)
+    return Math.floor(coordenadas)
 }
 
-const referencePoints = computed(() => {
+const points = computed(() => {
     const total = props.amount.length
-    return props.amount.reduce((acumulador, actual, indice) => {
-        const x = Math.floor(valueX / total) * (indice + 1);
+    return props.amount.reduce((acumulador, actual, index) => {
+        const x = (valueX / total) * (index + 1)
+        console.log('Estas son las coordenadas de x: ', x);
         const y = coordenadasY(actual)
-        return `${acumulador} ${x},${y}`
-    }, "0, 100")
+        return `${acumulador} ${x}, ${y}`
+    }, `0, ${coordenadasY(0)}`)
 })
+
+
 
 </script>
 
