@@ -56,7 +56,7 @@ export default{
 main{
     display: flex;
     flex-direction: column;
-    padding-top: 100px;
+    padding: 20px 0;
     align-items: center;
     height: calc(100vh - 70px);
     gap: 15px;
