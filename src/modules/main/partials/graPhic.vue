@@ -76,18 +76,19 @@ function coordenadasY(value){
     return coordenadas
 }
 
-console.log('Este es el resultado de y cuando esta en cero: ', coordenadasY(0));
+console.log('Este es el resultado de y cuando esta en cero: ', Math.floor(coordenadasY(0)) - 1);
 console.log('Estos son los valores de las coordenadas enviadas: ', props.amount);
 
 const points = computed(() => {
-    const total = props.amount.length
+    const total = props.amount?.length
     return props.amount.reduce((acumulador, actual, index) => {
-        const x = Math.floor((Number(valueX) / total) * (index))
+        const x = Math.ceil((Number(valueX) / total) * (index))
         console.log('Estas son las coordenadas en X: ', x);
-        const y = coordenadasY(actual)
+        const y = Math.floor(coordenadasY(actual))
         console.log('Estas son las coordenadas de Y: ', y);
+        console.log('Este es el acumulador: ', acumulador);
         return `${acumulador} ${x}, ${y}`
-    }, `0, ${coordenadasY(0)}`)
+    }, `0, ${Math.floor(coordenadasY(0) - 1)}`);
 })
 
 

@@ -9,8 +9,8 @@
         <boDy
             :title="title"
             :titeDate="titleSelect"
-            :amount="amount"
-            :fullAmount="fullAmount"
+            :amount="fullAmount"
+            :fullAmount="amount"
         >
             <template #graphic>
                 <graPhic :amount="coordenadasAmount" @touchLine="moveLine" />
@@ -93,16 +93,12 @@ export default {
         Field,
         graPhic
     },
-    data: () => ({
-        showHistory: false,
-        amount: 1000,
-        fullAmount: 6000000,
-        title: 'Ahorro total',
-        titleSelect: '13/6/2023',
-    }),
     setup(){
         const movimientos = ref([])
         const showModal = ref(false)
+
+        const fullAmount = ref(null)
+        const amount = ref(null)
 
         onBeforeMount(() => {
             saveDatasToStorage()
@@ -116,7 +112,13 @@ export default {
                     time: new Date(el.time)
                 }
             })
+            fullAmount.value = data.reduce((acumulador, actual) => {
+                return acumulador + actual.amount
+            }, 0)
+            console.log('Esto es lo que esta guardando amount: ', fullAmount.value);
         }
+
+
 
         const valuesForm = ref({
             titleForm: '',
@@ -221,16 +223,25 @@ export default {
             sendForm,
             showModal,
             coordenadasAmount,
-            deleteAmount
+            deleteAmount,
+            amount,
+            fullAmount
         }
     },
+    data: () => ({
+        showHistory: false,
+        title: 'Ahorro total',
+        titleSelect: '13/6/2023',
+    }),
     methods: {
         reload() {
             location.reload();
         },
         moveLine(coordenadas){
-            console.log('Datos guardados en el array');
-            console.log(coordenadas);
+            const index = Math.ceil(coordenadas / (300 / this.coordenadasAmount.length)) - 1
+            console.log('Este es el indice sacado: ', index);
+            this.amount = this.movimientos[index]?.amount
+            this.titleSelect = this.movimientos[index]?.time.toLocaleDateString()
         },
     }
 }

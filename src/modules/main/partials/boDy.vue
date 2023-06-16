@@ -1,7 +1,7 @@
 <template>
     <main>
         <p>{{ seeTitle }}</p>
-        <h1 class="f-medium">{{ transformAmount }}</h1>
+        <h1 class="f-medium" :class="seeAmount < 0 ? 'text-danger': ''">{{ transformAmount }}</h1>
         <div class="graphic">
             <slot name="graphic"></slot>
         </div>
@@ -39,10 +39,10 @@ export default{
     },
     computed: {
         seeAmount(){
-            return this.amount ? this.amount: this.fullAmount
+            return this.fullAmount ? this.fullAmount: this.amount
         },
         seeTitle(){
-            return this.amount ? this.title: this.titeDate
+            return this.fullAmount ? this.titeDate: this.title
         },
         transformAmount(){
             return currency(this.seeAmount)
