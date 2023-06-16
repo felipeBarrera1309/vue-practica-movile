@@ -115,6 +115,10 @@ export default {
             fullAmount.value = data.reduce((acumulador, actual) => {
                 return acumulador + actual.amount
             }, 0)
+            if(!movimientos.value.length){
+                fullAmount.value = 0
+                amount.value = 0
+            }
             console.log('Esto es lo que esta guardando amount: ', fullAmount.value);
         }
 
